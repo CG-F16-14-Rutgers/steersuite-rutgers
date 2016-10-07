@@ -129,6 +129,14 @@ namespace SteerLib
 		*  DO NOT MODIFY polygon1.xml
 		*/
 		static bool intersect(float& return_penetration_depth, Util::Vector& return_penetration_vector, const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB);
+		static bool GJK(std::vector<Util::Vector>& shapeA, std::vector<Util::Vector>& shapeB, std::vector<Util::Vector>& simplex);
+		static void EPA(float& return_penetration_depth, Util::Vector& return_penetration_vector, std::vector<Util::Vector> shapeA, std::vector<Util::Vector> shapeB, std::vector<Util::Vector> simplex);
+		static Util::Vector getInitDirection(std::vector<Util::Vector>& shapeA, std::vector<Util::Vector>& shapeB);
+		static Util::Vector getMinkowskiDifferencePt(Util::Vector pointA, Util::Vector pointB);
+		static Util::Vector getFarthestPoint(std::vector<Util::Vector> shape, Util::Vector direction);
+		static bool checkForOrigin(std::vector<Util::Vector>& simplex, Util::Vector& direction);
+		static float getDotProduct(Util::Vector a, Util::Vector b);
+		static std::vector<Util::Vector> initSimplex(std::vector<Util::Vector> shapeA, std::vector<Util::Vector> shapeB, Util::Vector& direction);
 
 	private:
 
