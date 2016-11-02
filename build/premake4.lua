@@ -15,14 +15,14 @@ end
 
 
 solution "steersuite"
-	configurations { 
+	configurations {
 		"Debug",
 		"Release"
 	}
 	location (todir)
 
 	-- extra warnings, no exceptions or rtti
-	flags { 
+	flags {
 		"ExtraWarnings",
 --		"FloatFast",
 --		"NoExceptions",
@@ -38,7 +38,7 @@ solution "steersuite"
 			"Symbols",
 			Optimize = Off
 		}
- 
+
  	-- release configs
 	configuration "Release*"
 		defines { "NDEBUG" }
@@ -51,15 +51,15 @@ solution "steersuite"
 		targetdir ( "bin" )
 
 	configuration { "linux" }
-		linkoptions { 
+		linkoptions {
 			-- "-stdlib=libc++" ,
 			"-Wl,-rpath," .. path.getabsolute("lib")
 		}
 		targetdir ( "lib" )
-		
+
 	configuration { "macosx" }
         buildoptions { "-stdlib=libc++" }
-		linkoptions { 
+		linkoptions {
 			"-stdlib=libc++" ,
 			"-Wl,-rpath," .. path.getabsolute("lib")
 		}
@@ -67,7 +67,7 @@ solution "steersuite"
 	        "OpenGL.framework",
         }
         targetdir ( "lib" )
-      
+
 	if os.get() == "macosx" then
 		premake.gcc.cc = "clang"
 		premake.gcc.cxx = "clang++"
@@ -77,18 +77,18 @@ solution "steersuite"
 project "steersim"
 	language "C++"
 	kind "ConsoleApp"
-	includedirs { 
+	includedirs {
 		"../steerlib/include",
 		"../steersim/include",
 		"../steersimlib/include",
 		"../external",
-		"../util/include" 
+		"../util/include"
 	}
-	files { 
+	files {
 		"../steersim/include/*.h",
 		"../steersim/src/*.cpp"
 	}
-	links { 		
+	links {
 		"steerlib",
 		"steersimlib",
 		"util",
@@ -96,18 +96,18 @@ project "steersim"
 	}
 
 	targetdir "bin"
-	buildoptions("-std=c++0x -ggdb" )	
+	buildoptions("-std=c++0x -ggdb" )
 
 	-- linux library cflags and libs
 	configuration { "linux", "gmake" }
-		buildoptions { 
+		buildoptions {
 			"`pkg-config --cflags gl`",
-			"`pkg-config --cflags glu`" 
+			"`pkg-config --cflags glu`"
 		}
-		linkoptions { 
+		linkoptions {
 			"-Wl,-rpath," .. path.getabsolute("lib") ,
 			"`pkg-config --libs gl`",
-			"`pkg-config --libs glu`" 
+			"`pkg-config --libs glu`"
 		}
 		libdirs { "lib" }
 		links {
@@ -120,7 +120,7 @@ project "steersim"
 	-- windows library cflags and libs
 	configuration { "windows" }
 		-- libdirs { "lib" }
-		links { 
+		links {
 			"opengl32",
 			"glu32",
 		}
@@ -130,11 +130,11 @@ project "steersim"
 		kind "ConsoleApp" -- xcode4 failes to run the project if using WindowedApp
 		includedirs { "/Library/Frameworks/SDL.framework/Headers" }
 		buildoptions { "-Wunused-value -Wshadow -Wreorder -Wsign-compare -Wall" }
-		linkoptions { 
+		linkoptions {
 			"-Wl,-rpath," .. path.getabsolute("lib") ,
 		}
-		links { 
-			"OpenGL.framework", 
+		links {
+			"OpenGL.framework",
 			"Cocoa.framework",
 			"tinyxml",
 			"dl",
@@ -144,34 +144,34 @@ project "steersim"
 project "steersimlib"
 	language "C++"
 	kind "SharedLib"
-	includedirs { 
+	includedirs {
 		"../steerlib/include",
 		"../steersimlib/include",
 		"../external",
-		"../util/include" 
+		"../util/include"
 	}
-	files { 
+	files {
 		"../steersimlib/include/*.h",
 		"../steersimlib/include/**.h",
 		"../steersimlib/src/*.cpp"
 	}
-	links { 		
+	links {
 		"steerlib",
 		"util",
 		"glfw",
 	}
 
-	
-	buildoptions("-std=c++0x -ggdb" )	
+
+	buildoptions("-std=c++0x -ggdb" )
 
 	-- linux library cflags and libs
 	configuration { "linux" }
-		buildoptions { 
+		buildoptions {
 			"`pkg-config --cflags gl`",
 			"`pkg-config --cflags glu`",
 			"-fPIC"
 		}
-		linkoptions { 
+		linkoptions {
 			"-Wl,-rpath," .. path.getabsolute("lib") ,
 			"`pkg-config --libs gl`",
 			"`pkg-config --libs glu`",
@@ -189,7 +189,7 @@ project "steersimlib"
 	-- windows library cflags and libs
 	configuration { "windows" }
 		-- libdirs { "../RecastDemo/Contrib/SDL/lib/x86" }
-		links { 
+		links {
 			"opengl32",
 			"glu32",
 			"glfw"
@@ -202,10 +202,10 @@ project "steersimlib"
 			"pthread",
 			"tinyxml",
 		}
-		linkoptions { 
+		linkoptions {
 			"-install_name @rpath/libsteersimlib.dylib"
 		}
-		
+
 
 --[====[
 	-- mac includes and libs
@@ -213,12 +213,12 @@ project "steersimlib"
 		kind "ConsoleApp" -- xcode4 failes to run the project if using WindowedApp
 		includedirs { "/Library/Frameworks/SDL.framework/Headers" }
 		buildoptions { "-Wunused-value -Wshadow -Wreorder -Wsign-compare -Wall" }
-		links { 
-			"OpenGL.framework", 
+		links {
+			"OpenGL.framework",
 			"Cocoa.framework",
 		}
 --]====]
-		
+
 project "tinyxml"
         language "C++"
         kind "SharedLib"
@@ -229,147 +229,147 @@ project "tinyxml"
                 "../external/tinyxml/*.h",
                 "../external/tinyxml/*.cpp"
         }
-        
-		
+
+
         configuration { "macosx" }
-			linkoptions { 
+			linkoptions {
 				"-install_name @rpath/libtinyxml.dylib"
 			}
-			buildoptions("-std=c++0x -ggdb" )	
-			
+			buildoptions("-std=c++0x -ggdb" )
+
 		 configuration { "linux" }
-			buildoptions("-std=c++0x -ggdb" )	
-		
-		
-			
+			buildoptions("-std=c++0x -ggdb" )
+
+
+
 project "util"
 	language "C++"
 	kind "SharedLib"
-	includedirs { 
+	includedirs {
 		"../util/include"
 	}
-	files { 
+	files {
 		"../util/include/*.h",
 		"../util/include/**.h",
 		"../util/src/*.cpp"
 	}
 	-- targetdir "bin"
 	configuration { "macosx" }
-		linkoptions { 
+		linkoptions {
 			"-install_name @rpath/libutil.dylib"
 		}
-		buildoptions("-std=c++0x -ggdb" )	
-		
+		buildoptions("-std=c++0x -ggdb" )
+
 	 configuration { "linux" }
-		buildoptions("-std=c++0x -ggdb" )	
+		buildoptions("-std=c++0x -ggdb" )
 
 project "steerlib"
 	language "C++"
 	kind "SharedLib"
-	includedirs { 
+	includedirs {
 		"../steerlib/include" ,
 		"../external" ,
-		"../steerlib/include/util", 
-		"../util/include" 
-		
+		"../steerlib/include/util",
+		"../util/include"
+
 	}
-	files { 
+	files {
 		"../steerlib/include/*.h",
 		"../steerlib/include/**.h",
-		"../steerlib/src/*.cpp" 
+		"../steerlib/src/*.cpp"
 	}
-	links { 
+	links {
 		-- "tinyxml",
 		"util"
 	}
-	
-	
-	
+
+
+
 	configuration { "windows" }
 		files {
 			"../external/tinyxml/*.h",
-			"../external/tinyxml/*.cpp" 
+			"../external/tinyxml/*.cpp"
 		}
-	
+
 	configuration { "macosx" }
 		links {
 			"OpenGL.framework",
 			"tinyxml"
 		}
-		linkoptions { 
+		linkoptions {
 			"-install_name @rpath/libsteerlib.dylib"
 		}
-		buildoptions("-std=c++0x -ggdb" )	
-			
+		buildoptions("-std=c++0x -ggdb" )
+
 	 configuration { "linux" }
-		buildoptions("-std=c++0x -ggdb" )	
+		buildoptions("-std=c++0x -ggdb" )
 		links { "tinyxml" }
 
 project "glfw"
 	kind "SharedLib"
     	language "C"
-   	includedirs { 
+   	includedirs {
 		"../external/glfw/include",
 		"../external/glfw/include/GL",
 		"../external/glfw/lib",
 		-- "../external/glfw/lib/x11"
 	}
-	files { 
+	files {
 	--	"../external/glfw/lib/x11/*.h",
 	--	"../external/glfw/lib/x11/*.c",
 		"../external/glfw/lib/*.h",
 		"../external/glfw/lib/*.c"
 	}
 	defines { "GLFW_BUILD_DLL" }
-	
+
 
     configuration {"linux"}
-        files { 
+        files {
 		"../external/glfw/lib/x11/*.c",
-		 "../external/glfw/x11/*.h" 
+		 "../external/glfw/x11/*.h"
 		}
         includedirs { "../external/glfw/lib/x11" }
         defines { "_GLFW_USE_LINUX_JOYSTICKS", "_GLFW_HAS_XRANDR", "_GLFW_HAS_PTHREAD" ,"_GLFW_HAS_SCHED_YIELD", "_GLFW_HAS_GLXGETPROCADDRESS" }
-        links { 
+        links {
 			"pthread",
 		}
 
-        
-        buildoptions { 
+
+        buildoptions {
 			"-pthread",
 			"`pkg-config --cflags gl`",
-			"`pkg-config --cflags glu`",  
+			"`pkg-config --cflags glu`",
 			"-fPIC",
 		}
-       
+
     configuration {"windows"}
-        files { 
+        files {
 		"../external/glfw/lib/win32/*.c",
-		"../external/glfw/win32/*.h" 
+		"../external/glfw/win32/*.h"
 		}
 		links {
 			"opengl32"
 		}
         includedirs { "../external/glfw/lib/win32" }
         defines { "_GLFW_USE_LINUX_JOYSTICKS", "_GLFW_HAS_XRANDR", "_GLFW_HAS_PTHREAD" ,"_GLFW_HAS_SCHED_YIELD", "_GLFW_HAS_GLXGETPROCADDRESS" }
-       
+
     configuration {"macosx"}
         files { "../external/glfw/lib/cocoa/*.c",
 		 "../external/glfw/lib/cocoa/*.h",
-		 "../external/glfw/lib/cocoa/*.m" 
+		 "../external/glfw/lib/cocoa/*.m"
 	}
         includedirs { "../external/glfw/lib/cocoa" }
         defines { }
-        links { 
+        links {
 			"pthread",
 		}
 
-        
+
 --	removebuildoptions "-std=c++0x"
-        linkoptions { 
-		"-framework OpenGL", 
-		"-framework Cocoa", 
-		"-framework IOKit", 
+        linkoptions {
+		"-framework OpenGL",
+		"-framework Cocoa",
+		"-framework IOKit",
                 "-install_name @rpath/libglfw.dylib"
 	}
 	buildoptions {
@@ -379,171 +379,175 @@ project "glfw"
 project "simpleAI"
 	language "C++"
 	kind "SharedLib"
-	includedirs { 
+	includedirs {
 		"../steerlib/include",
 		"../simpleAI/include",
 		"../external",
-		"../util/include" 
+		"../util/include"
 	}
-	files { 
+	files {
 		"../simpleAI/include/*.h",
 		"../simpleAI/src/*.cpp"
 	}
-	links { 
+	links {
 		"util",
 		"steerlib"
 	}
-	
-		
-	
+
+
+
 	configuration { "macosx" }
-		linkoptions { 
+		linkoptions {
 			"-install_name @rpath/libutil.dylib"
 		}
-		buildoptions("-std=c++0x -ggdb" )	
-		
+		buildoptions("-std=c++0x -ggdb" )
+
 	 configuration { "linux" }
-		buildoptions("-std=c++0x -ggdb" )	
-	
+		buildoptions("-std=c++0x -ggdb" )
+
 project "sfAI"
 	language "C++"
 	kind "SharedLib"
-	includedirs { 
+	includedirs {
 		"../steerlib/include",
 		"../socialForcesAI/include",
 		"../external",
-		"../util/include" 
+		"../util/include"
 	}
-	files { 
+	files {
 		"../socialForcesAI/include/*.h",
 		"../socialForcesAI/src/*.cpp"
 	}
-	links { 
+	links {
 		"steerlib",
 		"util"
 	}
-		
-	buildoptions("-std=c++0x -ggdb" )	
-	
+
+	buildoptions("-std=c++0x -ggdb" )
+
 project "rvo2dAI"
 	language "C++"
 	kind "SharedLib"
-	includedirs { 
+	includedirs {
 		"../steerlib/include",
 		"../rvo2AI/include",
 		"../external",
 		"../util/include",
-		"../kdtree/include", 
+		"../kdtree/include",
 		-- "../meshdatabase/include",
 		-- "../acclmesh/include"
 	}
-	files { 
+	files {
 		"../rvo2AI/include/*.h",
 		"../rvo2AI/src/*.cpp"
 	}
-	links { 
+	links {
 		"steerlib",
 		"util",
 		-- "meshdatabase"
 	}
-		
-	buildoptions("-std=c++0x -ggdb" )	
+
+	buildoptions("-std=c++0x -ggdb" )
 
 project "pprAI"
 	language "C++"
 	kind "SharedLib"
-	includedirs { 
+	includedirs {
 		"../steerlib/include",
 		"../pprAI/include",
 		"../external",
 		"../util/include",
 	}
-	files { 
+	files {
 		"../pprAI/include/*.h",
 		"../pprAI/src/*.cpp"
 	}
-	links { 
+	links {
 		"steerlib",
 		"util"
 	}
-		
+
 	buildoptions("-std=c++0x -ggdb" )
 
 project "collisionAI"
 	language "C++"
 	kind "SharedLib"
-	includedirs { 
+	includedirs {
 		"../steerlib/include",
 		"../collisionAI/include",
 		"../external",
 		"../util/include",
 	}
-	files { 
+	files {
 		"../collisionAI/include/*.h",
 		"../collisionAI/src/*.cpp"
 	}
-	links { 
+	links {
 		"steerlib",
 		"util"
 	}
-	
+
+	buildoptions("-std=c++0x -ggdb" )
+
 project "searchAI"
 	language "C++"
 	kind "SharedLib"
-	includedirs { 
+	includedirs {
 		"../steerlib/include",
 		"../searchAI/include",
 		"../external",
 		"../util/include",
 	}
-	files { 
+	files {
 		"../searchAI/include/*.h",
 		"../searchAI/src/*.cpp"
 	}
-	links { 
+	links {
 		"steerlib",
 		"util"
 	}
-	
+
+	buildoptions("-std=c++0x -ggdb" )
+
 project "curveAI"
 	language "C++"
 	kind "SharedLib"
-	includedirs { 
+	includedirs {
 		"../steerlib/include",
 		"../curveAI/include",
 		"../external",
 		"../util/include",
 	}
-	files { 
+	files {
 		"../curveAI/include/*.h",
 		"../curveAI/src/*.cpp"
 	}
-	links { 
+	links {
 		"steerlib",
 		"util"
 	}
-		
-	buildoptions("-std=c++0x -ggdb" )	
-	
+
+	buildoptions("-std=c++0x -ggdb" )
+
 project "kdtree"
 	language "C++"
 	kind "SharedLib"
-	includedirs { 
+	includedirs {
 		"../steerlib/include",
 		"../kdtree/include",
 		"../external",
 		"../util/include",
 	}
-	files { 
+	files {
 		"../kdtree/include/*.h",
 		"../kdtree/src/*.cpp"
 	}
-	links { 
+	links {
 		"steerlib",
 		"util",
 	}
-	
-	buildoptions("-std=c++0x -ggdb" )	
+
+	buildoptions("-std=c++0x -ggdb" )
 	configuration { "macosx" }
                 linkoptions {
                         "-install_name @rpath/libkdtree.dylib"
@@ -552,34 +556,34 @@ project "kdtree"
 project "Recast"
 	language "C++"
 	kind "StaticLib"
-	includedirs { 
+	includedirs {
 		"../navmeshBuilder/include",
 		"../external/recastnavigation/Recast/Include",
 		"../util/include",
 	}
-	files { 
+	files {
 		"../external/recastnavigation/Recast/Include/*.h",
 		"../external/recastnavigation/Recast/Source/*.cpp",
 	}
-	links { 
+	links {
 		"steerlib",
 		"util",
 	}
-	
-	buildoptions("-std=c++0x -ggdb -fPIC" )	
-	
+
+	buildoptions("-std=c++0x -ggdb -fPIC" )
+
 	configuration { "macosx" }
         linkoptions {
                 "-install_name @rpath/libRecast.dylib"
         }
-		buildoptions { 
+		buildoptions {
 			"-fPIC"
 		}
 
 project "DebugUtils"
 	language "C++"
 	kind "StaticLib"
-	includedirs { 
+	includedirs {
 		"../navmeshBuilder/include",
 		"../external/recastnavigation/DebugUtils/Include",
 		"../external/recastnavigation/Detour/Include",
@@ -587,16 +591,16 @@ project "DebugUtils"
 		"../external/recastnavigation/DetourTileCache/Include",
 		"../util/include",
 	}
-	files { 
+	files {
 		"../external/recastnavigation/DebugUtils/Include/*.h",
 		"../external/recastnavigation/DebugUtils/Source/*.cpp",
 	}
-	links { 
+	links {
 		"Recast",
 		"Detour"
 	}
-	
-	buildoptions("-std=c++0x -ggdb -fPIC" )	
+
+	buildoptions("-std=c++0x -ggdb -fPIC" )
 	configuration { "macosx" }
         linkoptions {
                 "-install_name @rpath/libDebugUtils.dylib"
@@ -605,7 +609,7 @@ project "DebugUtils"
 project "Detour"
 	language "C++"
 	kind "StaticLib"
-	includedirs { 
+	includedirs {
 		"../navmeshBuilder/include",
 		"../external/recastnavigation/DebugUtils/Include",
 		"../external/recastnavigation/Detour/Include",
@@ -613,15 +617,15 @@ project "Detour"
 		"../external/recastnavigation/DetourTileCache/Include",
 		"../util/include",
 	}
-	files { 
+	files {
 		"../external/recastnavigation/Detour/Include/*.h",
 		"../external/recastnavigation/Detour/Source/*.cpp",
 	}
-	links { 
+	links {
 		"Recast",
 	}
-	
-	buildoptions("-std=c++0x -ggdb -fPIC" )	
+
+	buildoptions("-std=c++0x -ggdb -fPIC" )
 	configuration { "macosx" }
         linkoptions {
                 "-install_name @rpath/libDetour.dylib"
@@ -630,7 +634,7 @@ project "Detour"
 project "DetourCrowd"
 	language "C++"
 	kind "StaticLib"
-	includedirs { 
+	includedirs {
 		"../navmeshBuilder/include",
 		"../external/recastnavigation/DebugUtils/Include",
 		"../external/recastnavigation/Detour/Include",
@@ -639,25 +643,25 @@ project "DetourCrowd"
 		"../external/recastnavigation/DetourCrowd/Include",
 		"../util/include",
 	}
-	files { 
+	files {
 		"../external/recastnavigation/DetourCrowd/Include/*.h",
 		"../external/recastnavigation/DetourCrowd/Source/*.cpp",
 	}
-	links { 
+	links {
 		"Recast",
 		"Detour"
 	}
-	
-	buildoptions("-std=c++0x -ggdb -fPIC" )	
+
+	buildoptions("-std=c++0x -ggdb -fPIC" )
 	configuration { "macosx" }
         linkoptions {
                 "-install_name @rpath/libDetourCrowd.dylib"
-        }	
+        }
 
 project "navmesh"
 	language "C++"
 	kind "SharedLib"
-	includedirs { 
+	includedirs {
 		"../steerlib/include",
 		"../navmeshBuilder/include",
 		"../external/recastnavigation/Recast/Include",
@@ -669,11 +673,11 @@ project "navmesh"
 		"../external",
 		"../util/include",
 	}
-	files { 
+	files {
 		"../navmeshBuilder/include/*.h",
 		"../navmeshBuilder/src/*.cpp"
 	}
-	links { 
+	links {
 		"steerlib",
 		"steersimlib",
 		"util",
@@ -681,30 +685,30 @@ project "navmesh"
 		"DebugUtils",
 		"Detour",
 		"DetourCrowd",
-		
+
 	}
-	
-	buildoptions("-std=c++0x -ggdb -fPIC" )	
+
+	buildoptions("-std=c++0x -ggdb -fPIC" )
 	configuration { "macosx" }
                 linkoptions {
                         "-install_name @rpath/libnavmesh.dylib"
                 }
 
-	
+
 project "steerbench"
 	language "C++"
 	kind "ConsoleApp"
-	includedirs { 
+	includedirs {
 		"../steerlib/include",
 		"../steerbench/include",
 		"../external",
-		"../util/include" 
+		"../util/include"
 	}
-	files { 
+	files {
 		"../steerbench/include/*.h",
 		"../steerbench/src/*.cpp"
 	}
-	links { 		
+	links {
 		"steerlib",
 		"util",
 		"glfw"
@@ -712,22 +716,22 @@ project "steerbench"
 
 
 	targetdir "bin"
-	buildoptions("-std=c++0x -ggdb" )	
+	buildoptions("-std=c++0x -ggdb" )
 
 	-- linux library cflags and libs
 	configuration { "linux", "gmake" }
 		-- kind "ConsoleApp"
-		buildoptions { 
+		buildoptions {
 			"`pkg-config --cflags gl`",
-			"`pkg-config --cflags glu`" 
+			"`pkg-config --cflags glu`"
 		}
-		linkoptions { 
+		linkoptions {
 			-- "-Wl,-rpath,./lib",
 			"-Wl,-rpath," .. path.getabsolute("lib") ,
 			"`pkg-config --libs gl`",
-			"`pkg-config --libs glu`" 
+			"`pkg-config --libs glu`"
 		}
-		links { 		
+		links {
 			"GLU",
 			"GL",
 			"dl",
@@ -738,7 +742,7 @@ project "steerbench"
 	-- windows library cflags and libs
 	configuration { "windows" }
 		libdirs { "../RecastDemo/Contrib/SDL/lib/x86" }
-		links { 
+		links {
 			"opengl32",
 			"glu32",
 		}
@@ -747,8 +751,8 @@ project "steerbench"
 	configuration { "macosx" }
 		kind "ConsoleApp" -- xcode4 failes to run the project if using WindowedApp
 		buildoptions { "-Wunused-value -Wshadow -Wreorder -Wsign-compare -Wall" }
-		links { 
-			"OpenGL.framework", 
+		links {
+			"OpenGL.framework",
 			"Cocoa.framework",
 			"dl",
 			"tinyxml"
