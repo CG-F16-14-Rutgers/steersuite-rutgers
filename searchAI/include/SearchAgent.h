@@ -59,7 +59,7 @@ public:
 	bool overlaps(const Util::Point & p, float radius) { return Util::circleOverlapsCircle2D( __position, _radius, p, radius); }
 	float computePenetration(const Util::Point & p, float radius) { return Util::computeCircleCirclePenetration2D( __position, _radius, p, radius); }
 	//@}
-	
+
 
 	/*
 	computePlan calls the A* function to compute the path and store in in the global __path variable.

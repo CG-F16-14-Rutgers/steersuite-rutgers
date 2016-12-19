@@ -16,6 +16,7 @@
 // #include "SimpleAgent.h"
 // #include "SocialForcesAIModule.h"
 #include "SocialForces_Parameters.h"
+#include "planning/AStarPlanner.h"
 
 
 /**
@@ -63,7 +64,38 @@ public:
 	// void insertAgentNeighbor(const SteerLib::AgentInterface * agent, float &rangeSq) {throw Util::GenericException("clearGoals() not implemented yet for SocialForcesAgent");}
 	// bool compareDist(SteerLib::AgentInterface * a1, SteerLib::AgentInterface * a2 );
 
+	void crowdCrossing(Util::Vector& goalDirection, SteerLib::AgentGoalInfo goalInfo);
+
+	void planeIngress(Util::Vector& goalDirection, SteerLib::AgentGoalInfo goalInfo);
+	bool inside;
+	bool inside2;
+
+	void planeEgress(Util::Vector& goalDirection, SteerLib::AgentGoalInfo goalInfo);
+	int egressTimer;
+	int started;
+	int agentType;
+	bool agentTop;
+	bool agentBottom;
+	bool egressInside1;
+	bool egressInside2;
+	bool egressOutside;
+
+	void wallSqueeze(Util::Vector& goalDirection, SteerLib::AgentGoalInfo goalInfo);
+	int agentPriority;
+	int wallSqueezeTimer;
+
+	void doorwaytwoway();
+	void computeDoorWayTwoWayPlan();
+	bool madePlan;
+	bool collided;
+
+	void maze();
+	void computeMazePlan();
+
 protected:
+
+
+
 	/// Updates position, velocity, and orientation of the agent, given the force and dt time step.
 	// void _doEulerStep(const Util::Vector & steeringDecisionForce, float dt);
 
@@ -90,12 +122,17 @@ protected:
 	// Used to store Waypoints between goals
 	// A waypoint is choosen every FURTHEST_LOCAL_TARGET_DISTANCE
 
+	SteerLib::AStarPlanner astar;
+
 private:
 	// bool runLongTermPlanning();
 	// bool reachedCurrentWaypoint();
 	// void updateMidTermPath();
 	// bool hasLineOfSightTo(Util::Point point);
 
+	std::vector<Util::Point> __path;
+	Util::Point __next_waypoint;
+	int last_waypoint=0;
 
 	void calcNextStep(float dt);
 	Util::Vector calcRepulsionForce(float dt);

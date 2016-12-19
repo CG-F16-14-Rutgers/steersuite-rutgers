@@ -125,10 +125,10 @@ void SearchAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 {
 	Util::AutomaticFunctionProfiler profileThisFunction( &SearchAIGlobals::gPhaseProfilers->aiProfiler );
 
-	
+
 	double steps = (DURATION/(double)__path.size());
 	if(timeStamp*dt > last_waypoint*steps)
-	{	
+	{
 		if(!_goalQueue.empty())
 		{
 			__position = _goalQueue.front().targetLocation;
@@ -163,7 +163,7 @@ void SearchAgent::draw()
 	if (_goalQueue.front().goalType == SteerLib::GOAL_TYPE_SEEK_STATIC_TARGET) {
 		Util::DrawLib::drawFlag(_goalQueue.front().targetLocation);
 	}
-	
+
 	if(__path.size()>0)
 	{
 		for(int i = 1; i<__path.size(); ++i)

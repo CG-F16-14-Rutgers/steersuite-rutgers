@@ -19,12 +19,12 @@ namespace SteerLib
 
 	/*
 		@function The AStarPlannerNode class gives a suggested container to build your search tree nodes.
-		@attributes 
+		@attributes
 		f : the f value of the node
 		g : the cost from the start, for the node
 		point : the point in (x,0,z) space that corresponds to the current node
 		parent : the pointer to the parent AStarPlannerNode, so that retracing the path is possible.
-		@operators 
+		@operators
 		The greater than, less than and equals operator have been overloaded. This means that objects of this class can be used with these operators. Change the functionality of the operators depending upon your implementation
 
 	*/
@@ -34,6 +34,7 @@ namespace SteerLib
 			double g;
 			Util::Point point;
 			AStarPlannerNode* parent;
+			AStarPlannerNode(){}
 			AStarPlannerNode(Util::Point _point, double _g, double _f, AStarPlannerNode* _parent)
 			{
 				f = _f;
@@ -56,7 +57,7 @@ namespace SteerLib
 
 	};
 
-	
+
 
 	class STEERLIB_API AStarPlanner{
 		public:
@@ -96,6 +97,23 @@ namespace SteerLib
 			*/
 
 			bool computePath(std::vector<Util::Point>& agent_path, Util::Point start, Util::Point goal, SteerLib::SpatialDataBaseInterface * _gSpatialDatabase, bool append_to_path = false);
+
+			int epsilon;
+
+			struct comparePt
+		  {
+		     bool operator() (const Util::Point& lhs, const Util::Point& rhs) const
+		     {
+		         return (lhs.x < rhs.x) || ((lhs.x == rhs.x) && (lhs.z < rhs.z));
+		     }
+		  };
+
+			double calcHValue(Util::Point start, Util::Point destination);
+			std::vector<Util::Point> computeWeightedAStar(Util::Point start, Util::Point goal);
+			void populateNeighbors(SteerLib::AStarPlannerNode currentNode, Util::Point goal, std::multiset<SteerLib::AStarPlannerNode>& neighbors);
+			std::vector<Util::Point> createPath(std::map<Util::Point, Util::Point, AStarPlanner::comparePt> parents, SteerLib::AStarPlannerNode currentNode);
+			bool checkSet(std::multiset<AStarPlannerNode> set, SteerLib::AStarPlannerNode node);
+
 		private:
 			SteerLib::SpatialDataBaseInterface * gSpatialDatabase;
 	};
