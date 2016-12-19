@@ -44,6 +44,8 @@ SocialForcesAgent::SocialForcesAgent()
 
 	_enabled = false;
 
+	required = 0;
+
 	inside = false;
 	inside2 = false;
 
@@ -61,6 +63,8 @@ SocialForcesAgent::SocialForcesAgent()
 
 	madePlan = false;
 	collided = false;
+
+	agentFound = false;
 }
 
 SocialForcesAgent::~SocialForcesAgent()
@@ -909,6 +913,7 @@ void SocialForcesAgent::wallSqueeze(Util::Vector& goalDirection, SteerLib::Agent
 Util::Point toMove;
 int timer = 500;
 void SocialForcesAgent::planeIngress(Util::Vector& goalDirection, SteerLib::AgentGoalInfo goalInfo) {
+	required = 0;
 	int distanceToEntranceOne = sqrt(std::pow((goalInfo.targetLocation.z - 37.2),2));
 	int distanceToEntranceTwo = sqrt(std::pow((goalInfo.targetLocation.z - (-37.2)),2));
 	if(position().x > 4.5 && !inside) {
@@ -949,6 +954,7 @@ void SocialForcesAgent::planeIngress(Util::Vector& goalDirection, SteerLib::Agen
 }
 
 void SocialForcesAgent::planeEgress(Util::Vector& goalDirection, SteerLib::AgentGoalInfo goalInfo) {
+	required = 0;
 	egressTimer--;
 	if(egressTimer < 0) {
 		egressTimer = 700;
@@ -1043,7 +1049,7 @@ int chooserIncrement = 9000;
 int timeStop = 200000;
 bool timeStart = false;
 void SocialForcesAgent::crowdCrossing(Util::Vector& goalDirection, SteerLib::AgentGoalInfo goalInfo) {
-
+	required = 0;
 	timeStop--;
 	if (timeStop <= 0) {
 		timeStart = true;
@@ -1075,11 +1081,40 @@ void SocialForcesAgent::crowdCrossing(Util::Vector& goalDirection, SteerLib::Age
 }
 
 void SocialForcesAgent::doorwaytwoway() {
+	required = 1;
 	computeDoorWayTwoWayPlan();
 }
 
 void SocialForcesAgent::maze() {
+	required = 1;
 	computeMazePlan();
+}
+
+void SocialForcesAgent::partb(Util::Vector& goalDirection, SteerLib::AgentGoalInfo goalInfo) {
+	required = 0;
+	if((position().x < 10 || position().x > -10) && (position().z < 10 || position().z > -10))  {
+		std::set<SteerLib::SpatialDatabaseItemPtr> _neighbors;
+		getSimulationEngine()->getSpatialDatabase()->getItemsInRange(_neighbors, _position.x-(this->_radius * 20), _position.x+(this->_radius * 20),
+				_position.z-(this->_radius * 20), _position.z+(this->_radius * 20), dynamic_cast<SteerLib::SpatialDatabaseItemPtr>(this));
+
+		if(!agentFound) {
+			for (std::set<SteerLib::SpatialDatabaseItemPtr>::iterator neighbor = _neighbors.begin();  neighbor != _neighbors.end();  neighbor++)
+			{
+				SteerLib::AgentInterface* test = dynamic_cast<AgentInterface*>(*neighbor);
+				if((*neighbor)->isAgent() && !agentFound) {
+					agent = ((SocialForcesAgent*)test);
+					agentFound = true;
+					break;
+				}
+			}
+		}
+	}
+	if(agentFound) {
+		goalDirection = normalize(agent->position() - position());
+	}
+	else {
+		goalDirection = normalize(goalInfo.targetLocation - position());
+	}
 }
 
 void SocialForcesAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
@@ -1097,7 +1132,7 @@ void SocialForcesAgent::updateAI(float timeStamp, float dt, unsigned int frameNu
 	Util::Vector goalDirection;
 
 	/**
-	 * Uncomment functions below to use with corresponding testcases. wallSqueeze is used for both squeeze testcases
+	 * Uncomment functions below to use with corresponding testcases. wallSqueeze is used for both squeeze testcases.
 	 */
 
 	//planeIngress(goalDirection, goalInfo);
@@ -1106,6 +1141,11 @@ void SocialForcesAgent::updateAI(float timeStamp, float dt, unsigned int frameNu
 	//wallSqueeze(goalDirection,goalInfo);
 	//doorwaytwoway();
 	//maze();
+	partb(goalDirection,goalInfo);
+
+	/**
+	 * for testing other testcases
+	 */
 
 	// std::cout << "midtermpath empty: " << _midTermPath.empty() << std::endl;
 	if ( ! _midTermPath.empty() && (!this->hasLineOfSightTo(goalInfo.targetLocation)) )
@@ -1116,13 +1156,14 @@ void SocialForcesAgent::updateAI(float timeStamp, float dt, unsigned int frameNu
 		}
 
 		this->updateLocalTarget();
-
-	 	goalDirection = normalize(_currentLocalTarget - position());
+		if(required != 0)
+	 		goalDirection = normalize(_currentLocalTarget - position());
 
 	}
 	else
 	{
-		goalDirection = normalize(goalInfo.targetLocation - position());
+		if(required != 0)
+			goalDirection = normalize(goalInfo.targetLocation - position());
 	}
 	// _prefVelocity = goalDirection * PERFERED_SPEED;
 	Util::Vector prefForce = (((goalDirection * PERFERED_SPEED) - velocity()) / (_SocialForcesParams.sf_acceleration/dt)); //assumption here

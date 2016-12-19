@@ -63,6 +63,7 @@ public:
 	// bool collidesAtTimeWith(const Util::Point & p1, const Util::Vector & rightSide, float otherAgentRadius, float timeStamp, float footX, float footZ);
 	// void insertAgentNeighbor(const SteerLib::AgentInterface * agent, float &rangeSq) {throw Util::GenericException("clearGoals() not implemented yet for SocialForcesAgent");}
 	// bool compareDist(SteerLib::AgentInterface * a1, SteerLib::AgentInterface * a2 );
+	int required;
 
 	void crowdCrossing(Util::Vector& goalDirection, SteerLib::AgentGoalInfo goalInfo);
 
@@ -91,6 +92,10 @@ public:
 
 	void maze();
 	void computeMazePlan();
+
+	void partb(Util::Vector& goalDirection, SteerLib::AgentGoalInfo goalInfo);
+	bool agentFound;
+	SocialForcesAgent* agent;
 
 protected:
 
